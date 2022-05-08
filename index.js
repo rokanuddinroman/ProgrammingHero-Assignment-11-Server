@@ -32,8 +32,16 @@ async function run() {
             res.send(product)
         })
 
+
+        app.delete('/product/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+        })
+
         // updating stocks
-        app.put('/invatory/:id', async (req, res) => {
+        app.put('/product/:id', async (req, res) => {
             const id = req.params.id;
             const updatedStock = req.body;
             console.log(updatedStock)
@@ -41,11 +49,12 @@ async function run() {
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    quantity: updatedStock.quantity
+                    quantity: updatedStock.newQuantityString
                 }
             }
             const result = await productCollection.updateOne(filter, updatedDoc, options)
-            res.json(result)
+            res.send(result)
+            console.log(result)
         })
 
     }
