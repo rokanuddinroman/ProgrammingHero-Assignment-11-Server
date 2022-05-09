@@ -16,6 +16,7 @@ async function run() {
     try {
         await client.connect();
         const productCollection = client.db("marvelBangladesh").collection("product");
+        const myProductCollection = client.db("marvelBangladesh").collection("myProduct");
 
         app.get('/product', async (req, res) => {
             const query = {}
@@ -56,6 +57,22 @@ async function run() {
             res.send(result)
             console.log(result)
         })
+
+        // My Products API 
+        app.get('/myproduct', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const cursor = myProductCollection.find(query)
+            const myProducts = await cursor.toArray();
+            res.send(myProducts)
+        })
+
+        app.post('/myproduct', async (req, res) => {
+            const product = req.body;
+            const result = await myProductCollection.insertOne(product)
+            res.send(result)
+        })
+
 
     }
     finally {
